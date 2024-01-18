@@ -7,7 +7,7 @@
 -- AND no last_meeting date OR more than a month
 
 
-CREATE VIEW IF NOT EXISTS need_meeting AS
+CREATE VIEW need_meeting AS
 
 SELECT name FROM students
-WHERE SCORE < 80 AND( last_meeting IS NULL OR last_meeting < DATE(CURDATE() - INTERVAL 1 MONTH))
+WHERE SCORE < 80 AND (last_meeting IS NULL OR last_meeting < DATE(CURDATE() - INTERVAL 1 MONTH))
