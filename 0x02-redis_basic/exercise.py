@@ -31,9 +31,11 @@ class Cache:
         with the correct conversion function"""
         return self.get(key, lambda x: x.decode("utf-8"))
 
-    def get_int(self, key: str):
-        """automatically parametrize Cache.get
-        with the correct conversion function"""
-        data = self._redis.get(key, int)
-        decoded = data.decode("utf-8")
-        return int(decoded)
+    def get_int(self, key: str) -> int:
+        """ automatically parametrize Cache.get to int """
+        data = self._redis.get(key)
+        try:
+            data = int(value.decode("utf-8"))
+        except Exception:
+            data = 0
+        return data
