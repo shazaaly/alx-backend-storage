@@ -34,4 +34,6 @@ class Cache:
     def get_int(self, key: str):
         """automatically parametrize Cache.get
         with the correct conversion function"""
-        return self._redis.get(key, int)
+        data = self._redis.get(key, int)
+        decoded = data.decode("utf-8")
+        return int(decoded)
