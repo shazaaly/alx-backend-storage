@@ -20,11 +20,14 @@ class Cache:
         self._redis.set(key, data)
         return key
 
-    def get(self, key: str, fn: optional[Callable] = None) -> Union[str, bytes, int, float]:
+    def get(self, key: str, fn: Optional[Callable] = None) -> Union[str, bytes, int, float]:
         """convert the data back to the desired format"""
 
         data = self._redis.get(key)
-        return fn(data) if fn else data
+        if fn:
+            return fn(data) if data else None
+        else:
+            return data
 
     def get_str(self, key: str):
         """automatically parametrize Cache.get
