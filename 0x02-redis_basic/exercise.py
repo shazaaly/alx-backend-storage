@@ -20,7 +20,7 @@ class Cache:
         self._redis.set(key, data)
         return key
 
-    def get(self, key: str, fn: Callable = None):
+    def get(self, key: str, fn: Callable = None) -> Union[str, bytes, int, float]:
         """convert the data back to the desired format"""
 
         data = self._redis.get(key)
@@ -31,11 +31,7 @@ class Cache:
         with the correct conversion function"""
         return self.get(key, lambda x: x.decode("utf-8"))
 
-    def get_int(self, key: str) -> int:
-        """ automatically parametrize Cache.get to int """
-        data = self._redis.get(key)
-        try:
-            data = int(value.decode("utf-8"))
-        except Exception:
-            data = 0
-        return data
+    def get_int(self, key: str):
+        """automatically parametrize Cache.get
+        with the correct conversion function"""
+        return self._redis.get(key, int)
