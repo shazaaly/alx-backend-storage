@@ -4,21 +4,22 @@
 
 import redis
 import uuid
-import functools
+from functools import wraps
 from typing import Union, Callable, Optional
 
 
 
 def count_calls(method: Callable) -> Callable:
-    """decorator takes a single method Callable argument and returns a Callable"""
+    """decorator takes a single method Callable
+    argument and returns a Callable"""
     key = method.__qualname__
-    @functools.wraps(method)
+
+    @wraps(method)
     def wrapper(self, *args, **kwargs):
         # get the function name from the wrapped function
-        print(key)
         self._redis.incr(key)
 
-        return method(args[0], *args, **kwargs)
+        return method(self, *args, **kwargs)
     return wrapper
 
 
@@ -37,7 +38,9 @@ class Cache:
         return key
 
 
-    def get(self, key: str, fn: Optional[Callable] = None) -> Union[str, bytes, int, float]:
+    def get(self, key: str,
+            fn: Optional[Callable] = None) -> Union[str,
+                                                    bytes, int, float]:
         """convert the data back to the desired format"""
 
         data = self._redis.get(key)
@@ -45,7 +48,6 @@ class Cache:
             return fn(data) if data else None
         else:
             return data
-
 
     def get_str(self, key: str):
         """automatically parametrize Cache.get
