@@ -34,4 +34,4 @@ class Cache:
     def get_int(self, key: str):
         """automatically parametrize Cache.get
         with the correct conversion function"""
-        return self.get(key, int)
+        return self._redis.get(key, int)
