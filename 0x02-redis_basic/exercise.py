@@ -68,7 +68,7 @@ class Cache:
 
 
     def get(self, key: str,
-            fn: Optional[Callable] = None) -> Union[str,
+            fn: Callable = None) -> Union[str,
                                                     bytes, int, float]:
         """convert the data back to the desired format"""
 
