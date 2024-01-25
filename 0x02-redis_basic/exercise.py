@@ -29,7 +29,7 @@ class Cache:
     def get_str(self, key: str):
         """automatically parametrize Cache.get
         with the correct conversion function"""
-        return self.get(key, lambda x: x.decode("utf-8"))
+        return self._redis.get(key, lambda x: x.decode("utf-8"))
 
     def get_int(self, key: str):
         """automatically parametrize Cache.get
