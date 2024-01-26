@@ -46,11 +46,6 @@ def call_history(method: Callable) -> Callable:
     return wrapper
 
 
-
-
-
-
-
 class Cache:
     """A Cache class that stores data in Redis."""
 
@@ -87,4 +82,30 @@ class Cache:
     def get_int(self, key: str):
         """automatically parametrize Cache.get
         with the correct conversion function"""
-        return self._redis.get(key, int)
+        return self.get(key, lambda x: int(x))
+
+
+    def replay(self, method):
+        """
+        display the history of calls of a particular function
+
+        """
+        key = method.__qualname__
+        key_inputs= key + ":inputs"
+        key_outputs= key + ":outputs"
+        # The count_calls decorator, when applied to
+        # the store method, uses a separate key
+        # derived from the method's qualified name
+        # ("Cache.store" in this case) to keep
+        # track of how many times the store method has been called.
+        # This is a different key from the UUIDs used for storing data.
+        count = self.get(key).decode("utf-8")
+        print(f"Cache.{key} was called {count} times:")
+        inputs = self._redis.lrange(key_inputs, 0, -1)
+        outputs = self._redis.lrange(key_outputs, 0, -1)
+        zipped_list = list(zip(inputs, outputs))
+
+        for i, (input, output) in enumerate(zipped_list):
+            print(f"{key} (*{output}) -> {input}")
+
+
